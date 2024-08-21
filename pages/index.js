@@ -29,7 +29,6 @@ export default function Home() {
       <Head>
         <title>Popsa.com</title>
         <meta name="description" content="" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <div>
         <Intro>
