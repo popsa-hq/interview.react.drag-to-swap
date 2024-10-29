@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import Actions from "./actions";
+import { PageSwap } from "../pages/pageswap";
+import { DragDrop } from "../pages/draggableitem";
 
 const Wrapper = styled.div`
   width: 600px;
@@ -32,38 +34,41 @@ const PageLayout = styled.div`
   justify-content: space-between;
 `;
 
-const PrintPhoto = styled.div`
-  width: calc(50% - 10px);
+export default function PrintPage({ data, useManual, setLastEdited }) {
 
-  img {
-    max-width: 100%;
+  function formatLastEditedDate() {
+    // https://dev.to/diorla/a-guide-to-date-and-time-formatting-in-javascript-2ol2
+    const date = new Date();
+  
+    const options = {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+  
+    setLastEdited(`Hardback Photobook last edited on ${new Intl.DateTimeFormat('en-GB', options).format(date)}`);
   }
-`;
 
-export default function PrintPage({ data }) {
   return (
-    <>
-      <Wrapper>
-        {Object.values(data).map((entry, i) => {
-          return (
-            <PrintWrapper key={i}>
-              <Header>
-                <Title>{entry.title}</Title>
-                <Actions />
-              </Header>
-              <PageLayout>
-                {entry.images.map((image) => {
-                  return (
-                    <PrintPhoto key={image}>
-                      <img src={image} alt="" />
-                    </PrintPhoto>
-                  );
-                })}
-              </PageLayout>
-            </PrintWrapper>
-          );
-        })}
-      </Wrapper>
-    </>
+    <Wrapper>
+      {Object.values(data).map((entry, i) => (
+        <PrintWrapper key={i}>
+          <Header>
+            <Title>{entry.title}</Title>
+            <Actions />
+          </Header>
+          <PageLayout>
+            {useManual ? (
+              <PageSwap key={i} imgData={entry.images} setLastEdited={formatLastEditedDate}/>
+            ) : (
+              <DragDrop key={i} imgData={entry.images} setLastEdited={formatLastEditedDate}/>
+            )}
+          </PageLayout>
+        </PrintWrapper>
+      ))}
+    </Wrapper>
   );
 }
